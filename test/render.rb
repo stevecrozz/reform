@@ -1,5 +1,3 @@
-require 'nokogiri'
-
 class RenderTest < Test::Unit::TestCase
   def test_empty_form
     form = EmptyForm.new

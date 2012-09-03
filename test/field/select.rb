@@ -1,5 +1,3 @@
-require 'nokogiri'
-
 class FieldSelectTest < Test::Unit::TestCase
   def test_empty_select_field
     field = Reform::Field::Select.new

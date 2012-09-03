@@ -56,10 +56,19 @@ module Reform
         @__meta[:method] = options[:method]
       end
 
+      options[:values] ||= {}
+
       @fields = []
 
       meta[:fields].each do |f|
-        @fields.push(f[0].new(f[1]))
+        field_class, field_options = f
+
+        if field_options[:name]
+          field_options[:value] = options[:values][field_options[:name].to_sym]
+        end
+
+        field = field_class.new(field_options)
+        @fields.push(field)
       end
     end
 
@@ -80,8 +89,8 @@ module Reform
       self.fields.each do |field|
         ret += "<li>" + field.label + field.to_s + "</li>"
       end
-
       ret += "</ol>"
+
       ret += "</form>"
       return ret
     end

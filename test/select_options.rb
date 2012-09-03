@@ -21,6 +21,25 @@ class SelectOptionTest < Test::Unit::TestCase
     assert_equal(option2[1], options[1].attr("value"))
   end
 
+  def test_selected_options_create
+    option1 = [ "Some Value", "some_value" ]
+    option2 = [ "Another Value", "another_value" ]
+    option3 = [ "Third Value", "third_value" ]
+
+    options = Reform::SelectOptions.new(
+      [ option1, option2, option3 ],
+      [ "some_value", "third_value" ]
+    )
+
+    # Must inject a root node to validate, otherwise it is invalid XML
+    doc = Nokogiri.parse("<root>%s</root>" % options.to_s)
+    options = doc.css("root > option")
+
+    # The correct options are selected
+    assert_equal("selected", options[0].attr("selected"))
+    assert_equal("selected", options[2].attr("selected"))
+  end
+
   def test_one_level_nested_options_create
     option1 = [ "Some Value", "some_value" ]
     option2 = [ "Another Value", "another_value" ]
