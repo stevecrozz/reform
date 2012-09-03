@@ -21,6 +21,7 @@ module Reform
             :field_lookup => {},
             :action => "",
             :method => "post",
+            :values => {},
           }
         end
       end
@@ -45,45 +46,53 @@ module Reform
       @__meta[:fields]
     end
 
-    def initialize(options={})
-      @__meta = {}
+    # Instantiate the form class
+    #
+    # @param [Hash] opts
+    # @option opts [String] :action form action
+    # @option opts [String] :method form method
+    # @option opts [Hash] :values values to set on the form's elements
+    def initialize(opts={})
+      @__meta = self.meta
 
-      if options.has_key?(:action)
-        @__meta[:action] = options[:action]
-      end
-
-      if options.has_key?(:method)
-        @__meta[:method] = options[:method]
-      end
-
-      options[:values] ||= {}
+      @action = opts[:action] || @__meta[:action]
+      @method = opts[:method] || @__meta[:method]
+      @values = opts[:values] || @__meta[:values]
 
       @fields = []
 
-      meta[:fields].each do |f|
+      # Instantiate each field specified by the class definition
+      @__meta[:fields].each do |f|
         field_class, field_options = f
 
         if field_options[:name]
-          field_options[:value] = options[:values][field_options[:name].to_sym]
+          field_options[:value] = @values[field_options[:name].to_sym]
         end
 
+        # Instantiate the field
         field = field_class.new(field_options)
         @fields.push(field)
       end
     end
 
+    # Is the form valid?
     def valid?
       true
     end
 
+    # Get the original parameters that were used to create the form's class
+    #
+    # @return [Hash]
     def meta
       self.class.instance_variable_get(:@__meta)
     end
+    protected :meta
 
+    # Render the form
+    #
+    # @return [String] HTML representation of the form
     def to_s
-      ret  = "<form method=\"%s\" action=\"%s\">" % [
-        @__meta[:method], @__meta[:action]
-      ]
+      ret  = "<form method=\"%s\" action=\"%s\">" % [ @method, @action ]
 
       ret += "<ol>"
       self.fields.each do |field|
