@@ -1,8 +1,8 @@
 require 'rubygems'
+require 'bundler'
 require 'test/unit'
-require 'ruby-debug'
-require 'nokogiri'
-require 'mocha'
+require 'logger'
+Bundler.require(:default, :test)
 
 require 'reform/base'
 require 'reform/select_options'
@@ -15,8 +15,13 @@ require 'reform/field/hidden'
 require 'test/fixture'
 require 'test/declare'
 require 'test/render'
-require 'test/value'
+require 'test/instantiate'
 require 'test/select_options'
 require 'test/field/text'
 require 'test/field/select'
 require 'test/field/hidden'
+
+Bundler.require(:active_record)
+require 'active_record'
+require 'reform/model/active_record'
+require 'test/model/active_record'

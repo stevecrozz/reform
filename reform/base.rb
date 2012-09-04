@@ -12,7 +12,7 @@ module Reform
     #
     # @param [Reform::Base] descendent class
     def self.inherited(klass)
-      if klass.superclass == Reform::Base
+      if klass.superclass.name =~ /^Reform::/
         klass.instance_eval do
           @__meta = {
             :fields => [],
