@@ -8,6 +8,9 @@ class ActiveRecordTest < Test::Unit::TestCase
   class UserFormExclusion < Reform::Model::ActiveRecord
   end
 
+  class UserFormInclusion < Reform::Model::ActiveRecord
+  end
+
   def test_model_form
     UserForm.model(User)
     assert_equal(Reform::Field::Text, UserForm.fields[0][0])
@@ -23,6 +26,15 @@ class ActiveRecordTest < Test::Unit::TestCase
     assert_equal(Reform::Field::Text, UserFormExclusion.fields[0][0])
     assert_equal("name", UserFormExclusion.fields[0][1][:name])
     assert_equal(1, UserFormExclusion.fields.size)
+  end
+
+  def test_model_form_inclusion
+    UserFormInclusion.model(User)
+    UserFormInclusion.include(:name)
+
+    assert_equal(Reform::Field::Text, UserFormInclusion.fields[0][0])
+    assert_equal("name", UserFormInclusion.fields[0][1][:name])
+    assert_equal(1, UserFormInclusion.fields.size)
   end
 
   def teardown

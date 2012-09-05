@@ -5,6 +5,8 @@ if File.exists?(ACTIVE_RECORD_DB)
 end
 
 ActiveRecord::Base.logger = Logger.new(STDOUT)
+ActiveRecord::Base.logger.level = Logger::Severity::INFO
+ActiveRecord::Migration.verbose = false
 ActiveRecord::Base.establish_connection(
   :adapter => 'sqlite3',
   :database => ACTIVE_RECORD_DB

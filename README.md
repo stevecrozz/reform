@@ -49,3 +49,16 @@ form.to_s
   </ol>
 </form>
 ```
+
+## Rendering
+Reform forms can be rendered however you like using Renderer classes.
+Simply declare a class that extends Reform::Renderer::Base, implement
+the defined interface and your forms will use your rules to render.
+Check out the existing renderer classes under reform/renderer/ to get
+started. Tell your form to implement the renderer like this:
+
+```ruby
+class MyForm < Reform::Base
+  renderer MyApp::FormRenderer
+end
+```

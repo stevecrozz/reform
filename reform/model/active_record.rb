@@ -15,7 +15,13 @@ module Reform
       end
 
       def self.model(klass, options={})
+        # Do not include anything that is specifically excluded
         if self.exclude.include?(options[:name])
+          return
+        end
+
+        # If we're using includes, restrict to the includes
+        if self.include.size > 0 && !self.include.include?(option[:name])
           return
         end
 
@@ -35,6 +41,17 @@ module Reform
             field k, Reform::Field::Text
           end
         end
+      end
+
+      def self.include(fields=[])
+        fields = Array(fields)
+        @__meta[:fields].reject! do |klass, options|
+          !fields.include?(options[:name].to_sym)
+        end
+
+        @includes ||= []
+        @includes += fields
+        return @includes
       end
 
       def self.exclude(fields=[])

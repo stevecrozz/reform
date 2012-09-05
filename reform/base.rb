@@ -15,12 +15,13 @@ module Reform
       if klass.superclass.name =~ /^Reform::/
         klass.instance_eval do
           @__meta = {
+            :action => "",
+            :field_lookup => {},
+            :field_names => [],
             :fields => [],
             :fieldsets => [],
-            :field_names => [],
-            :field_lookup => {},
-            :action => "",
             :method => "post",
+            :renderer => Reform::Renderer::OlRenderer,
             :values => {},
           }
         end
@@ -37,6 +38,17 @@ module Reform
       options[:name] ||= name.to_s
       options[:id] ||= "%s_%s" % [self.name, name]
       @__meta[:fields].push([klass, options])
+    end
+
+    # Set the form's renderer class
+    #
+    # @param [Reform::Renderer::Base] renderer renderer class to use
+    def self.renderer(renderer=nil)
+      if renderer
+        @__meta[:renderer] = renderer
+      end
+
+      return @__meta[:renderer]
     end
 
     # Accessor for examining the field class' fields
@@ -58,6 +70,8 @@ module Reform
       @action = opts[:action] || @__meta[:action]
       @method = opts[:method] || @__meta[:method]
       @values = opts[:values] || @__meta[:values]
+
+      @renderer = (opts[:renderer] || @__meta[:renderer]).new
 
       @fields = []
 
@@ -94,11 +108,14 @@ module Reform
     def to_s
       ret  = "<form method=\"%s\" action=\"%s\">" % [ @method, @action ]
 
-      ret += "<ol>"
+      ret += @renderer.inner_form_open
       self.fields.each do |field|
-        ret += "<li>" + field.label + field.to_s + "</li>"
+        ret += @renderer.label_outer_open
+        ret += field.label
+        ret += field.to_s
+        ret += @renderer.field_outer_close
       end
-      ret += "</ol>"
+      ret += @renderer.inner_form_close
 
       ret += "</form>"
       return ret

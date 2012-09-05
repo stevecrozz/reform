@@ -11,6 +11,8 @@ require 'reform/field/text'
 require 'reform/field/select'
 require 'reform/field/text_area'
 require 'reform/field/hidden'
+require 'reform/renderer/base'
+require 'reform/renderer/ol_renderer'
 
 require 'test/fixture'
 require 'test/declare'

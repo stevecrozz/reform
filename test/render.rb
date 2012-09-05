@@ -27,4 +27,20 @@ class RenderTest < Test::Unit::TestCase
     assert_equal("SimpleForm_name", input.attribute("id").to_s)
     assert_equal("name", input.attribute("name").to_s)
   end
+
+  def test_set_renderer
+    SimpleForm.renderer("SOMERENDERER")
+    assert_equal("SOMERENDERER", SimpleForm.renderer)
+    SimpleForm.renderer(Reform::Renderer::OlRenderer)
+  end
+
+  def test_ol_renderer
+    SimpleForm.renderer(Reform::Renderer::OlRenderer)
+    form = SimpleForm.new
+    doc = Nokogiri.parse(form.to_s)
+    field_container = doc.css("form > ol > li")
+    assert_equal(1, field_container.size)
+    assert_equal(1, field_container.css("label").size)
+    assert_equal(1, field_container.css("input").size)
+  end
 end
