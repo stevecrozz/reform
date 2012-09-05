@@ -1,3 +1,5 @@
+source "http://rubygems.org"
+
 group :active_record do
   gem 'activerecord'
   gem 'sqlite3'
